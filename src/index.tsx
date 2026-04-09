@@ -26,15 +26,13 @@ const PPRDebuggerContext = React.createContext<PPRDebuggerContextValue>({
   visible: false
 });
 
-const isDev = process.env.NODE_ENV === 'development';
-
 export function PPRDebugger({
   children,
   defaultVisible = true,
   enabled = true
 }: PPRDebuggerProps): React.ReactElement {
   const [visible, setVisible] = React.useState(defaultVisible);
-  const isEnabled = isDev && enabled;
+  const isEnabled = enabled && isDevelopmentEnvironment();
 
   React.useEffect(() => {
     if (!isEnabled) {
@@ -83,6 +81,8 @@ export function PPRDebugger({
         <button
           type="button"
           onClick={() => setVisible((value) => !value)}
+          aria-label="Toggle PPR overlays"
+          aria-pressed={visible}
           style={{
             marginTop: '0.75rem',
             width: '100%',
@@ -205,3 +205,6 @@ function getTone(mode: PPRMode): {
   };
 }
 
+function isDevelopmentEnvironment(): boolean {
+  return process.env.NODE_ENV === 'development';
+}
